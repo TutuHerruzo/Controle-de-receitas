@@ -1,14 +1,14 @@
-import os
 from flask import Flask
-from app.controllers import auth_bp, main_bp
+from config import Config
 
-def create_app():
-    views_path = os.path.join(os.path.dirname(__file__), 'views')
+def create_app(config_class=Config):
+    app = Flask(__name__, template_folder='views')
+    app.config.from_object(config_class)
 
-    app = Flask(__name__, template_folder=views_path)
-    app.secret_key = 'sua_chave_secreta_super_segura_aqui'
+    # Registra Blueprints
+    from app.controllers.auth_controller import auth_bp
+    from app.controllers.main_controller import main_bp
 
-    # Registrar os Blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
 
