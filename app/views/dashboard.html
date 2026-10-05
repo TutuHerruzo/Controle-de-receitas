@@ -1,19 +1,59 @@
 {% extends 'base.html' %}
 
-{% block title %}Bem-vindo - Gerenciador de Receitas{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-8 text-center">
-        <div class="card shadow p-4">
-            <h1 class="display-4 text-success">Seja Bem-vindo(a), {{ username }}! 👋</h1>
-            <p class="lead mt-3">Você está logado no seu Sistema de Gerenciamento de Receitas.</p>
-            <hr>
-            <p class="text-muted">Em breve você poderá cadastrar, editar, excluir receitas, adicionar fotos e observações por aqui.</p>
-            <div class="mt-4">
-                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Sair / Logout</a>
-            </div>
-        </div>
-    </div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+    <h2 style="margin: 0;">Olá, {{ username }}!</h2>
+    <a href="{{ url_for('auth.logout') }}" class="btn" style="width: auto; background-color: #6c757d; padding: 6px 12px; font-size: 14px;">
+        Sair
+    </a>
 </div>
+
+<!-- Ações Rápidas -->
+<div style="margin-bottom: 30px; text-align: right;">
+    <a href="{{ url_for('recipe.create_recipe') }}" class="btn" style="width: auto; background-color: #28a745;">
+        + Criar Nova Receita
+    </a>
+</div>
+
+<!-- Seção de Receitas -->
+<h3 style="color: #444; margin-bottom: 15px;">Suas Receitas Cadastradas</h3>
+
+{% if recipes %}
+    <div class="recipes-list">
+        {% for recipe in recipes %}
+            <div style="border-left: 4px solid #007bff; background-color: #f8f9fa; padding: 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                
+                <h4 style="margin: 0 0 5px 0; color: #333;">{{ recipe.title }}</h4>
+                
+                {% if recipe.description %}
+                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">{{ recipe.description }}</p>
+                {% endif %}
+                
+                <div style="display: flex; gap: 10px; align-items: center; font-size: 13px;">
+                    <!-- Botão Excluir -->
+                    <form action="{{ url_for('recipe.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="margin: 0;">
+                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; padding: 0; font-weight: bold; text-decoration: underline;"
+                                onclick="return confirm('Excluir {{ recipe.title }}?')">
+                            Excluir
+                        </button>
+                    </form>
+                    
+                    <span style="color: #ccc;">|</span>
+                    <span style="color: #999;">Criada em: {{ recipe.created_at.strftime('%d/%m/%Y') if recipe.created_at else '' }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- Estado vazio (Empty State) -->
+    <div style="text-align: center; padding: 30px; background-color: #fff; border: 1px dashed #ccc; border-radius: 8px;">
+        <p style="color: #666; margin-bottom: 15px;">Você ainda não tem receitas salvas.</p>
+        <a href="{{ url_for('recipe.create_recipe') }}" style="color: #007bff; font-weight: bold;">
+            Comece adicionando a sua primeira!
+        </a>
+    </div>
+{% endif %}
+
 {% endblock %}

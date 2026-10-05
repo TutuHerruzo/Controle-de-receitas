@@ -5,6 +5,7 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # Se já estiver logado, redireciona para o painel principal
     if 'user_id' in session:
         return redirect(url_for('main.dashboard'))
 
@@ -12,6 +13,7 @@ def login():
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
 
+        # O método authenticate continua sendo um @classmethod que retorna uma instância ou None
         user = User.authenticate(username, password)
 
         if user:
@@ -26,6 +28,7 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    # Se já estiver logado, redireciona para o painel principal
     if 'user_id' in session:
         return redirect(url_for('main.dashboard'))
 
@@ -41,7 +44,11 @@ def register():
         elif User.find_by_username(username):
             flash('Este nome de usuário já está cadastrado!', 'danger')
         else:
-            User.create(username, password)
+            # NOVO PADRÃO ACTIVE RECORD: Instancia, prepara e salva.
+            novo_usuario = User(username=username)
+            novo_usuario.set_password(password)
+            novo_usuario.save()
+            
             flash('Conta criada com sucesso! Faça login para continuar.', 'success')
             return redirect(url_for('auth.login'))
 

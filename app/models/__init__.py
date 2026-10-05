@@ -1,3 +1,5 @@
 from .user_model import User
+from .recipe_model import Recipe  # <-- Adicione esta linha
 
-__all__ = ['User']
+# Exponha ambas as classes
+__all__ = ['User', 'Recipe']

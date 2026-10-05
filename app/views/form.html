@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Receita{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px;">Cadastrar Nova Receita</h2>
+
+<form action="{{ url_for('recipe.create_recipe') }}" method="POST">
+    <div class="form-group">
+        <label for="title">Título da Receita *</label>
+        <input type="text" id="title" name="title" required placeholder="Ex: Bolo de Cenoura">
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descrição Breve (opcional)</label>
+        <input type="text" id="description" name="description" placeholder="Ex: Receita de família passada por gerações">
+    </div>
+
+    <div class="form-group">
+        <label for="ingredients">Ingredientes *</label>
+        <textarea id="ingredients" name="ingredients" rows="5" required 
+                  style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
+                  placeholder="Liste os ingredientes..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="instructions">Modo de Preparo *</label>
+        <textarea id="instructions" name="instructions" rows="6" required 
+                  style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
+                  placeholder="Descreva o passo a passo..."></textarea>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="submit" class="btn" style="background-color: #28a745;">Salvar Receita</button>
+        <a href="{{ url_for('main.dashboard') }}" class="btn" style="background-color: #6c757d; text-align: center;">Cancelar</a>
+    </div>
+</form>
+{% endblock %}
