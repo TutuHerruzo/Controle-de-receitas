@@ -12,10 +12,6 @@ engine = create_engine(
 
 @contextmanager
 def get_db_cursor():
-    """
-    Gerenciador de contexto que fornece um cursor nativo (DBAPI).
-    Garante commit, rollback e encerramento correto do cursor e conexão.
-    """
     raw_conn = engine.raw_connection()
     cursor = raw_conn.cursor()
     try:
@@ -29,7 +25,6 @@ def get_db_cursor():
         raw_conn.close()
 
 def init_db():
-    """Cria tabelas e índices executando DDL diretamente pelo cursor."""
     create_table_sql = """
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,33 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Login - Gerenciador de Receitas{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center">
-                <h4>Acesso ao Sistema</h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Usuário</label>
-                        <input type="text" class="form-control" id="username" name="username" required placeholder="Ex: admin">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Senha</label>
-                        <input type="password" class="form-control" id="password" name="password" required placeholder="Ex: 1234">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
-                </form>
-            </div>
-            <div class="card-footer text-muted text-center small">
-                <strong>Usuários para teste:</strong><br>
-                admin / 1234<br>
-                chef_maria / receita123
-            </div>
-        </div>
+<h2 class="text-center">Acessar o Sistema</h2>
+
+<form action="{{ url_for('auth.login') }}" method="POST">
+    <div class="form-group">
+        <label for="username">Nome de Usuário</label>
+        <input type="text" id="username" name="username" required>
     </div>
-</div>
+
+    <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+
+    <button type="submit" class="btn">Entrar</button>
+</form>
+
+<p class="text-center" style="margin-top: 15px;">
+    Não tem uma conta? <a href="{{ url_for('auth.register') }}">Cadastre-se aqui</a>.
+</p>
 {% endblock %}
