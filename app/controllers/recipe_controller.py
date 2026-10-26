@@ -15,7 +15,8 @@ def create_recipe():
         
         if not title or not ingredients or not instructions:
             flash('Título, ingredientes e modo de preparo são obrigatórios.', 'warning')
-            return render_template('recipes/form.html')
+            # CORRIGIDO: Agora aponta para a raiz da pasta views
+            return render_template('form.html')
 
         # Usando o padrão Active Record que criamos
         nova_receita = Recipe(
@@ -31,7 +32,9 @@ def create_recipe():
         # Redireciona para o dashboard conforme combinamos
         return redirect(url_for('main.dashboard'))
 
+    # Para requisições GET (quando o usuário apenas abre a página)
     return render_template('form.html')
+
 
 @recipe_bp.route('/<int:recipe_id>/delete', methods=['POST'])
 @login_required
