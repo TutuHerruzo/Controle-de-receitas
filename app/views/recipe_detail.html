@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div
+    style="max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+
+    <h2 style="color: #333; margin-bottom: 5px;">{{ recipe.title }}</h2>
+    {% if recipe.description %}
+    <p style="color: #666; font-style: italic; margin-bottom: 20px;">{{ recipe.description }}</p>
+    {% endif %}
+
+    <div style="margin-bottom: 20px;">
+        <h3 style="border-bottom: 2px solid #28a745; padding-bottom: 5px;">Ingredientes</h3>
+        <!-- Usamos white-space: pre-wrap para respeitar as quebras de linha que o usuário digitou -->
+        <div style="white-space: pre-wrap; line-height: 1.6; margin-top: 10px;">{{ recipe.ingredients }}</div>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h3 style="border-bottom: 2px solid #28a745; padding-bottom: 5px;">Modo de Preparo</h3>
+        <div style="white-space: pre-wrap; line-height: 1.6; margin-top: 10px;">{{ recipe.instructions }}</div>
+    </div>
+
+    <div style="display: flex; gap: 10px; border-top: 1px solid #eee; padding-top: 20px;">
+        <!-- Botão de Modificar (já existia) -->
+        <a href="{{ url_for('recipe.edit_recipe', id=recipe.id) }}" class="btn" style="background-color: #007bff; color: white;">Modificar Receita</a>
+        
+        <!-- NOVO: Formulário do Botão de Excluir -->
+        <form action="{{ url_for('recipe.delete_recipe', recipe_id=recipe.id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir esta receita definitivamente?');">
+            <button type="submit" class="btn" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Excluir Receita</button>
+        </form>
+
+        <!-- Botão de Voltar (já existia) -->
+        <a href="{{ url_for('main.dashboard') }}" class="btn" style="background-color: #6c757d; color: white;">Voltar ao Painel</a>
+    </div>
+
+</div>
+{% endblock %}

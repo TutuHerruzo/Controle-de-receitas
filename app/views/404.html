@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Página não encontrada - 404{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 60px 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 600px; margin: 40px auto;">
+    
+    <!-- O número do erro em destaque -->
+    <h1 style="font-size: 5em; color: #dc3545; margin-bottom: 10px;">404</h1>
+    
+    <h2 style="color: #333; margin-bottom: 20px;">Oops! Página não encontrada.</h2>
+    
+    <p style="color: #666; margin-bottom: 30px; font-size: 1.1em;">
+        A página que você tentou acessar não existe, foi movida ou você digitou o endereço incorretamente.
+    </p>
+    
+    <!-- Botão de resgate para não deixar o usuário preso -->
+    <a href="{{ url_for('auth.login') }}" class="btn" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        Voltar para a Segurança
+    </a>
+    
+</div>
+{% endblock %}

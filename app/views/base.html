@@ -8,6 +8,9 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f9; }
         .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar { max-width: 600px; margin: 0 auto 15px auto; background: #333; padding: 12px 20px; border-radius: 8px; display: flex; gap: 20px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar a { color: #fff; text-decoration: none; font-weight: bold; }
+        .navbar a:hover { text-decoration: underline; color: #007bff; }
         .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
         .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
@@ -24,6 +27,16 @@
     </style>
 </head>
 <body>
+
+    <!-- BARRA DE NAVEGAÇÃO GLOBAL (Aparece apenas se estiver logado) -->
+    {% if session.get('user_id') %}
+        <div class="navbar">
+            <a href="{{ url_for('main.dashboard') }}">Início</a>
+            <a href="{{ url_for('category.index') }}">Categorias</a>
+            <a href="{{ url_for('auth.logout') }}" style="margin-left: auto; color: #ff8080;">Sair</a>
+        </div>
+    {% endif %}
+
     <div class="container">
         <!-- Renderização automática das mensagens Flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}

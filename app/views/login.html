@@ -6,9 +6,12 @@
 <h2 class="text-center">Acessar o Sistema</h2>
 
 <form action="{{ url_for('auth.login') }}" method="POST">
+    
     <div class="form-group">
         <label for="username">Nome de Usuário</label>
-        <input type="text" id="username" name="username" required>
+        <!-- O Jinja2 injeta o valor do cookie aqui -->
+        <input type="text" id="username" name="username" required 
+               value="{{ last_user }}" placeholder="Digite seu usuário">
     </div>
 
     <div class="form-group">
@@ -16,7 +19,7 @@
         <input type="password" id="password" name="password" required>
     </div>
 
-    <button type="submit" class="btn">Entrar</button>
+    <button type="submit" class="btn btn-primary">Entrar</button>
 </form>
 
 <p class="text-center" style="margin-top: 15px;">

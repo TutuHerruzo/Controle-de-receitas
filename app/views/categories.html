@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Categorias{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="margin-bottom: 20px;">Gerenciar Categorias</h2>
+
+    <!-- Formulário para Criar Categoria (POST) -->
+    <form action="{{ url_for('category.index') }}" method="POST" style="display: flex; gap: 10px; margin-bottom: 30px;">
+        <input type="text" name="name" placeholder="Ex: Sobremesas" required 
+               style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        <button type="submit" class="btn" style="background-color: #28a745; color: white;">Adicionar</button>
+    </form>
+
+    <hr style="border-top: 1px solid #eee; margin-bottom: 20px;">
+
+    <!-- Listagem Dinâmica das Categorias (GET) -->
+    <ul style="list-style-type: none; padding: 0;">
+        {% for categoria in categorias %}
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold;">{{ categoria.name }}</span>
+                
+                <!-- Botão de Excluir Seguro (POST) -->
+                <form action="{{ url_for('category.delete_category', id=categoria.id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir a categoria {{ categoria.name }}?');">
+                    <button type="submit" class="btn" style="background-color: #dc3545; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 4px;">
+                        Excluir
+                    </button>
+                </form>
+            </li>
+        {% else %}
+            <p style="text-align: center; color: #666;">Você ainda não cadastrou nenhuma categoria.</p>
+        {% endfor %}
+    </ul>
+    
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('main.dashboard') }}" class="btn" style="background-color: #6c757d; color: white;">Voltar ao Painel</a>
+    </div>
+</div>
+{% endblock %}

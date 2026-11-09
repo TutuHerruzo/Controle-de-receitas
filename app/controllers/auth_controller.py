@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, make_response, current_app
 from app.models import User
 
 auth_bp = Blueprint('auth', __name__)
@@ -20,11 +20,26 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             flash('Login realizado com sucesso!', 'success')
-            return redirect(url_for('main.dashboard'))
+            
+            # --- REGISTRO DE LOG DE SUCESSO ---
+            current_app.logger.info(f"O usuário '{user.username}' realizou login no sistema.")
+            
+            resposta = make_response(redirect(url_for('main.dashboard')))
+            resposta.set_cookie('last_username', username, max_age=60*60*24*7)
+            return resposta
+            
         else:
             flash('Usuário ou senha incorretos!', 'danger')
+            
+            # --- REGISTRO DE LOG DE FALHA ---
+            current_app.logger.warning(f"Tentativa de login falha para o usuário: '{username}'.")
 
-    return render_template('login.html')
+    # --- 3. LEITURA DO COOKIE ---
+    # Quando for requisição GET, tenta ler o cookie do navegador. Se não existir, fica vazio ('').
+    ultimo_user = request.cookies.get('last_username', '')
+    
+    # Enviamos a variável last_user para o HTML preencher o input
+    return render_template('login.html', last_user=ultimo_user)
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():

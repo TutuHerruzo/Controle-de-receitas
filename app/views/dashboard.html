@@ -5,14 +5,23 @@
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
     <h2 style="margin: 0;">Olá, {{ username }}!</h2>
-    <a href="{{ url_for('auth.logout') }}" class="btn" style="width: auto; background-color: #6c757d; padding: 6px 12px; font-size: 14px;">
-        Sair
-    </a>
+    
+    <!-- Link para a Gestão de Categorias -->
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="{{ url_for('category.index') }}" class="btn"
+            style="width: auto; background-color: #17a2b8; padding: 6px 12px; font-size: 14px; text-decoration: none; color: white;">
+            Gerenciar Categorias
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="btn"
+            style="width: auto; background-color: #6c757d; padding: 6px 12px; font-size: 14px; text-decoration: none; color: white;">
+            Sair
+        </a>
+    </div>
 </div>
 
 <!-- Ações Rápidas -->
 <div style="margin-bottom: 30px; text-align: right;">
-    <a href="{{ url_for('recipe.create_recipe') }}" class="btn" style="width: auto; background-color: #28a745;">
+    <a href="{{ url_for('recipe.create_recipe') }}" class="btn" style="width: auto; background-color: #28a745; text-decoration: none; display: inline-block;">
         + Criar Nova Receita
     </a>
 </div>
@@ -20,40 +29,79 @@
 <!-- Seção de Receitas -->
 <h3 style="color: #444; margin-bottom: 15px;">Suas Receitas Cadastradas</h3>
 
+<!-- Formulário de Busca e Filtros (GET) -->
+<div style="margin-bottom: 20px;">
+    <form action="{{ url_for('main.dashboard') }}" method="GET" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Input de busca por nome -->
+        <input type="text" name="busca" value="{{ busca }}" placeholder="Buscar por título..." 
+               style="padding: 8px; flex-grow: 1; min-width: 200px; border-radius: 4px; border: 1px solid #ccc;">
+        
+        <!-- Select para filtrar por Categoria -->
+        <select name="categoria" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: white;">
+            <option value="">Todas as Categorias</option>
+            {% for cat in categorias %}
+                <option value="{{ cat.id }}" {% if categoria_selecionada == cat.id %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn" style="background-color: #007bff; color: white; width: auto; padding: 8px 15px;">Filtrar</button>
+        
+        <!-- Botão para limpar a busca e os filtros -->
+        {% if busca or categoria_selecionada %}
+            <a href="{{ url_for('main.dashboard') }}" class="btn" style="background-color: #6c757d; color: white; text-decoration: none; padding: 8px 15px; display: inline-block; width: auto;">Limpar</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Listagem de Receitas -->
 {% if recipes %}
     <div class="recipes-list">
-        {% for recipe in recipes %}
-            <div style="border-left: 4px solid #007bff; background-color: #f8f9fa; padding: 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        {% for receita in recipes %}
+        <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; background: #fff;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <h3 style="margin: 0 0 10px 0;">{{ receita.title }}</h3>
                 
-                <h4 style="margin: 0 0 5px 0; color: #333;">{{ recipe.title }}</h4>
-                
-                {% if recipe.description %}
-                    <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">{{ recipe.description }}</p>
+                {% if receita.category_name %}
+                    <span style="background-color: #e2e3e5; color: #383d41; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                        {{ receita.category_name }}
+                    </span>
                 {% endif %}
-                
-                <div style="display: flex; gap: 10px; align-items: center; font-size: 13px;">
-                    <!-- Botão Excluir -->
-                    <form action="{{ url_for('recipe.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="margin: 0;">
-                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; padding: 0; font-weight: bold; text-decoration: underline;"
-                                onclick="return confirm('Excluir {{ recipe.title }}?')">
-                            Excluir
-                        </button>
-                    </form>
-                    
-                    <span style="color: #ccc;">|</span>
-                    <span style="color: #999;">Criada em: {{ recipe.created_at.strftime('%d/%m/%Y') if recipe.created_at else '' }}</span>
-                </div>
             </div>
+
+            <p style="color: #666; margin-bottom: 15px;">{{ receita.description }}</p>
+
+            <a href="{{ url_for('recipe.view_recipe', id=receita.id) }}" class="btn"
+                style="background-color: #17a2b8; padding: 6px 12px; text-decoration: none; color: white; border-radius: 4px; display: inline-block; width: auto; font-size: 14px;">
+                Ver / Modificar Receita
+            </a>
+        </div>
         {% endfor %}
     </div>
 {% else %}
     <!-- Estado vazio (Empty State) -->
-    <div style="text-align: center; padding: 30px; background-color: #fff; border: 1px dashed #ccc; border-radius: 8px;">
-        <p style="color: #666; margin-bottom: 15px;">Você ainda não tem receitas salvas.</p>
-        <a href="{{ url_for('recipe.create_recipe') }}" style="color: #007bff; font-weight: bold;">
-            Comece adicionando a sua primeira!
+    <div style="text-align: center; padding: 30px; background-color: #fff; border: 1px dashed #ccc; border-radius: 8px; margin-bottom: 20px;">
+        <p style="color: #666; margin-bottom: 15px;">Nenhuma receita encontrada nesta página ou com esses critérios.</p>
+        <a href="{{ url_for('recipe.create_recipe') }}" style="color: #007bff; font-weight: bold; text-decoration: none;">
+            Comece adicionando uma nova receita!
         </a>
     </div>
 {% endif %}
+
+<!-- PAGINAÇÃO -->
+<div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center; align-items: center;">
+    {% set current_page = request.args.get('pagina', 1)|int %}
+
+    {% if current_page > 1 %}
+        <a href="{{ url_for('main.dashboard', busca=busca, categoria=categoria_selecionada, pagina=current_page - 1) }}" class="btn" style="background-color: #f8f9fa; border: 1px solid #ccc; color: #333; width: auto; text-decoration: none; padding: 8px 12px;">&laquo; Página Anterior</a>
+    {% endif %}
+
+    <span style="padding: 8px; font-weight: bold;">Página {{ current_page }}</span>
+
+    {% if recipes|length == 6 %}
+        <a href="{{ url_for('main.dashboard', busca=busca, categoria=categoria_selecionada, pagina=current_page + 1) }}" class="btn" style="background-color: #f8f9fa; border: 1px solid #ccc; color: #333; width: auto; text-decoration: none; padding: 8px 12px;">Próxima Página &raquo;</a>
+    {% endif %}
+</div>
 
 {% endblock %}
